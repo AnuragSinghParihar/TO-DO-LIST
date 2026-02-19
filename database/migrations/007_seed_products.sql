@@ -1,0 +1,15 @@
+-- Seed data: Sample products for development
+
+INSERT INTO products (category_id, name, slug, description, price, compare_price, stock, image_url, featured, rating, review_count) VALUES
+(1, 'Wireless Bluetooth Headphones', 'wireless-bluetooth-headphones', 'Premium noise-cancelling wireless headphones with 30-hour battery life and superior sound quality.', 2499.00, 3499.00, 50, 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400', TRUE, 4.5, 128),
+(1, 'Smart Fitness Watch Pro', 'smart-fitness-watch-pro', 'Advanced fitness tracker with heart rate monitor, GPS, and 7-day battery life.', 4999.00, 6999.00, 35, 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400', TRUE, 4.3, 89),
+(1, 'USB-C Fast Charging Cable', 'usb-c-fast-charging-cable', 'Durable braided USB-C cable with 100W fast charging support.', 499.00, 799.00, 200, 'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=400', FALSE, 4.1, 256),
+(2, 'Classic Cotton T-Shirt', 'classic-cotton-tshirt', 'Premium 100% organic cotton t-shirt. Comfortable and breathable.', 799.00, 1299.00, 150, 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400', TRUE, 4.4, 67),
+(2, 'Slim Fit Denim Jeans', 'slim-fit-denim-jeans', 'Modern slim fit jeans with stretch fabric for maximum comfort.', 1999.00, 2999.00, 80, 'https://images.unsplash.com/photo-1542272604-787c3835535d?w=400', FALSE, 4.2, 43),
+(2, 'Running Shoes Ultra', 'running-shoes-ultra', 'Lightweight running shoes with responsive cushioning and breathable mesh.', 3499.00, 4999.00, 60, 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400', TRUE, 4.6, 112),
+(3, 'Stainless Steel Water Bottle', 'stainless-steel-water-bottle', 'Double-wall vacuum insulated bottle. Keeps drinks hot 12hrs, cold 24hrs.', 699.00, 999.00, 120, 'https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=400', FALSE, 4.3, 78),
+(3, 'Ceramic Coffee Mug Set', 'ceramic-coffee-mug-set', 'Set of 4 handcrafted ceramic mugs with modern geometric patterns.', 1299.00, 1799.00, 45, 'https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?w=400', TRUE, 4.7, 34),
+(4, 'JavaScript: The Good Parts', 'javascript-the-good-parts', 'Essential guide to JavaScript programming by Douglas Crockford.', 449.00, 599.00, 90, 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400', FALSE, 4.5, 201),
+(4, 'Clean Code Handbook', 'clean-code-handbook', 'A handbook of agile software craftsmanship by Robert C. Martin.', 549.00, 749.00, 75, 'https://images.unsplash.com/photo-1532012197267-da84d127e765?w=400', TRUE, 4.8, 189),
+(5, 'Yoga Mat Premium', 'yoga-mat-premium', 'Extra thick non-slip yoga mat with carrying strap. Perfect for all types of yoga.', 1499.00, 2199.00, 55, 'https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?w=400', FALSE, 4.4, 56),
+(5, 'Resistance Bands Set', 'resistance-bands-set', 'Set of 5 resistance bands with different tension levels for home workouts.', 899.00, 1399.00, 100, 'https://images.unsplash.com/photo-1598289431512-b97b0917affc?w=400', TRUE, 4.2, 92);

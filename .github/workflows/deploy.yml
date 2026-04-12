@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: CI/CD → ECR → ECS
 
 on:
   push:
@@ -9,25 +9,68 @@ on:
 env:
   AWS_REGION: us-east-1
   ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com
+  BACKEND_REPO: shopmart/backend
+  FRONTEND_REPO: shopmart/frontend
+  ECS_CLUSTER: shopmart-prod
+  ECS_BACKEND_SERVICE: backend-service
+  ECS_FRONTEND_SERVICE: frontend-service
 
 jobs:
-  # ── Job 1: Lint & Test ──────────────────────────────
+  # ── Job 1: Test ─────────────────────────────────────
   test:
-    name: Lint & Test
+    name: Run Tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
+        with: { node-version: '20', cache: 'npm', cache-dependency-path: backend/package-lock.json }
+      - name: Install & Test
+        working-directory: ./backend
+        run: npm ci && npm test -- --passWithNoTests
+
+  # ── Job 2: Build & Deploy Backend ───────────────────
+  deploy-backend:
+    name: Deploy Backend
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: backend/package-lock.json
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
 
-      - name: Install backend dependencies
-        working-directory: ./backend
-        run: npm ci
+      - name: Login to ECR
+        uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Run backend tests
-        working-directory: ./backend
-        run: npm test -- --passWithNoTests
+      - name: Build, tag, push backend
+        id: build-backend
+        run: |
+          SHORT_SHA=${GITHUB_SHA::8}
+          IMAGE=${{ env.ECR_REGISTRY }}/${{ env.BACKEND_REPO }}
+          docker build -t $IMAGE:$SHORT_SHA -t $IMAGE:latest ./backend
+          docker push $IMAGE:$SHORT_SHA
+          docker push $IMAGE:latest
+          echo "image=$IMAGE:$SHORT_SHA" >> $GITHUB_OUTPUT
+
+      - name: Render task definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: task-def.json
+          container-name: backend
+          image: ${{ steps.build-backend.outputs.image }}
+
+      - name: Deploy to ECS
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          service: ${{ env.ECS_BACKEND_SERVICE }}
+          cluster: ${{ env.ECS_CLUSTER }}
+          wait-for-service-stability: true

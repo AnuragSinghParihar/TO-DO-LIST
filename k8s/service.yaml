@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: shopmart-backend-svc
+  labels:
+    app: shopmart
+    component: backend
+spec:
+  type: ClusterIP
+  selector:
+    app: shopmart
+    component: backend
+  ports:
+    - port: 80
+      targetPort: 3000
+      protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shopmart-frontend-svc
+  labels:
+    app: shopmart
+    component: frontend
+spec:
+  type: LoadBalancer
+  selector:
+    app: shopmart
+    component: frontend
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
